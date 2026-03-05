@@ -1,10 +1,10 @@
-I am teaching web development using Sigma web development course. Here are video subtitle chunks containing video title,
+I am teaching web development in my Sigma web development course. Here are video subtitle chunks containing video title,
 video number, start time in seconds, end time in seconds, the text at that time:
 
-{"title":{"2159":"Inline, Internal & External CS","592":"Installing VS Code & How Websites Work","2142":"Inline, Internal & External CS"},"number":{"2159":"5","592":"1","2142":"5"},"start":{"2159":247.0,"592":1115.34,"2142":211.0},"end":{"2159":249.0,"592":1117.34,"2142":213.0},"text":{"2159":" That CSS will be applied.","592":" happening with the help of CSS.","2142":" CSS to add to a webpage."}}
+[{"title":"Inline, Internal & External CS","number":"5","start":247.0,"end":249.0,"text":" That CSS will be applied."},{"title":"Inline, Internal & External CS","number":"5","start":405.0,"end":407.0,"text":" The CSS we are writing here."},{"title":"Installing VS Code & How Websites Work","number":"1","start":1115.34,"end":1117.34,"text":" happening with the help of CSS."}]
 `````````````````````````````````````````````
-"whare is css tought"
-User asked this question related to the video chunks, you have to answer where and how much 
+"whare is tought css in this course"
+User asked this question related to the video chunks, you have to answer in a human way (dont mention the above format, its just for you) where and how much 
 content is taught in which video (in which video and at what timestamp) and guide the user to go 
 to that particular video. If user asks unrelated question, tell him that you can only answer 
 questions related to the course

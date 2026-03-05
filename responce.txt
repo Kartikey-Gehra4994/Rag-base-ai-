@@ -1,0 +1,9 @@
+You're having some trouble understanding how HTML works in our Sigma web development course.
+
+Let me help you out. From what I can gather, you're probably watching the video on "Installing VS Code & How Websites Work" (Video 1).
+
+In that video, you'll learn about how websites work, including the basics of HTML. At around 1 minute and 23 seconds into the video, the instructor explains that HTML stands for HyperText Markup Language. They also mention that HTML is used to define the structure and content of web pages, and that it's the backbone of a website.
+
+Later on, at approximately 1 minute and 13 seconds, the instructor is discussing how HTML is used to create the structure of a web page, and how it's different from other programming languages.
+
+If you're still a bit unsure about how HTML works, I'd recommend checking out Video 1 again. Specifically, you can jump to around 1 minute and 23 seconds or 1 minute and 13 seconds to get a better understanding of the concepts. If you have any more questions, feel free to ask and I'll do my best to help!
