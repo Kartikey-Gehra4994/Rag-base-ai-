@@ -3,6 +3,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 import requests
 import numpy as np
 import joblib
+from openai import OpenAI
+from config import api_key
 
 def create_embedding(text_list):
     r = requests.post('http://localhost:11434/api/embed',json={
@@ -18,9 +20,18 @@ def inference(prompt):
         'prompt':  prompt,
         'stream': False
     })
-
     responce = r.json()
     return responce
+
+client = OpenAI(api_key=api_key)
+def inference_openai(prompt):
+    response = client.responses.create(
+    model="gpt-5.4",
+    input=prompt
+    )
+    print(response.output_text)
+    return response.output_text
+
 
 df = joblib.load('embed/embedding.joblib')
 incoming_query = input('Ask a Question: ')
@@ -53,8 +64,10 @@ questions related to the course
 # with open('prompt.txt', 'w') as f:
 #     f.write(prompt)
 
-responce = inference(prompt)['response']
+responce = inference(prompt)['response'] # llama3.2 responce
 print(responce)
+
+# responce = inference_openai(prompt) # apenai GPT-5.4 Response
 
 with open('responce.txt', 'w') as f:
     f.write(responce)

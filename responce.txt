@@ -1,7 +1,7 @@
-You're trying to figure out where we're covering HTML in the course. We actually dive into HTML in the first video, "Installing VS Code & How Websites Work", which is video number 1. 
+Hi there! I'd be happy to help you with your question about CSS in this course.
 
-We start discussing HTML around 1511 seconds into the video. If you want to see exactly where that is, you can go back to video 1 and start playing from that timestamp. 
+From what I understand, you're looking to know where and how much CSS is taught in this course. 
 
-In that section, we'll go over the basics of HTML and explain how it's used to build websites. It's a fundamental part of the web development process, and it's essential for you to understand how to work with HTML in order to build websites. 
+I can tell you that CSS (Cascading Style Sheets) is indeed covered in this course, specifically in Video 5. You can find the relevant video by going to Video 5 on our course platform, and then looking for the timestamp around 247 seconds into the video. That's where the instructor starts discussing CSS, explaining the different types - inline, internal, and external - and how they apply to web development.
 
-If you have any questions or need clarification on the concepts we're covering, feel free to ask!
+Let me know if you have any more questions or need further clarification!
