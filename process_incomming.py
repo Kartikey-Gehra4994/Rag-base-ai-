@@ -3,9 +3,10 @@ from sklearn.metrics.pairwise import cosine_similarity
 import requests
 import numpy as np
 import joblib
-from openai import OpenAI
-from config import api_key
+# from openai import OpenAI
+# from config import api_key
 
+# Create embedding for user query
 def create_embedding(text_list):
     r = requests.post('http://localhost:11434/api/embed',json={
         'model':'bge-m3',
@@ -14,6 +15,7 @@ def create_embedding(text_list):
     embedding = r.json()['embeddings']
     return embedding
 
+# Send prompt to local LLM and get response
 def inference(prompt):
     r = requests.post('http://localhost:11434/api/generate', json={
         'model': 'llama3.2',
@@ -23,32 +25,36 @@ def inference(prompt):
     responce = r.json()
     return responce
 
-client = OpenAI(api_key=api_key)
-def inference_openai(prompt):
-    response = client.responses.create(
-    model="gpt-5.4",
-    input=prompt
-    )
-    print(response.output_text)
-    return response.output_text
+# Send prompt to Openai LLM using api and get response
+# client = OpenAI(api_key=api_key)
+# def inference_openai(prompt):
+#     response = client.responses.create(
+#     model="gpt-5.4",
+#     input=prompt
+#     )
+#     print(response.output_text)
+#     return response.output_text
 
+# Load embeddings dataframe created earlier
+df = joblib.load('embed_merged_json/embedding.joblib')
 
-df = joblib.load('embed/embedding.joblib')
+# Get question from user
 incoming_query = input('Ask a Question: ')
+print('Thinking...')
+
+# Convert user question into embedding
 question_embadding = create_embedding([incoming_query])[0]
 
-# Find similariys of question_embadding with other embeddings
-# similarities = cosine_similarity(df['embedding'].values, )
-# print(np.vstack(df['embedding'].values))
-# print(np.vstack(df['embedding']).shape)
-
+# Calculate similarity between question and stored embeddings
 similaritis = cosine_similarity(np.vstack(df['embedding']), [question_embadding]).flatten()
+
 top_results = 3
-print(similaritis)
+
+# Select top most relevant chunks
 max_idx = similaritis.argsort()[::-1][0:top_results]
 new_df = df.iloc[max_idx]
-# print(new_df[['title', 'number', 'text']])
 
+# Create prompt using retrieved video chunks
 prompt = f'''I am teaching web development in my Sigma web development course. Here are video subtitle chunks containing video title,
 video number, start time in seconds, end time in seconds, the text at that time:
 
@@ -61,16 +67,10 @@ to that particular video. If user asks unrelated question, tell him that you can
 questions related to the course
 '''
 
-# with open('prompt.txt', 'w') as f:
-#     f.write(prompt)
-
+## send prompt and get responce from LLM
 responce = inference(prompt)['response'] # llama3.2 responce
 print(responce)
 
-# responce = inference_openai(prompt) # apenai GPT-5.4 Response
-
+## save responce into responce.txt
 with open('responce.txt', 'w') as f:
     f.write(responce)
-
-# for index, item in new_df.iterrows():
-#     print(index, item['title'], item['number'], item['text'], item['start'], item['end'])

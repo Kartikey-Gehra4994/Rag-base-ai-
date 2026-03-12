@@ -1,7 +1,5 @@
-Hi there! I'd be happy to help you with your question about CSS in this course.
+For your question about where and how much content is taught about audio and video in the course, I can help you with that.
 
-From what I understand, you're looking to know where and how much CSS is taught in this course. 
+Audio and video content are covered in Video, Audio & Media in HTML, which is Video #10. You can find this video by going to the Sigma web development course and navigating to the 10th video.
 
-I can tell you that CSS (Cascading Style Sheets) is indeed covered in this course, specifically in Video 5. You can find the relevant video by going to Video 5 on our course platform, and then looking for the timestamp around 247 seconds into the video. That's where the instructor starts discussing CSS, explaining the different types - inline, internal, and external - and how they apply to web development.
-
-Let me know if you have any more questions or need further clarification!
+In this video, you'll learn about various attributes of audio and video elements in HTML. To learn more about these attributes, fast-forward to around 353.4 seconds into the video, where the instructor begins discussing some of these attributes.
