@@ -1,5 +1,0 @@
-For your question about where and how much content is taught about audio and video in the course, I can help you with that.
-
-Audio and video content are covered in Video, Audio & Media in HTML, which is Video #10. You can find this video by going to the Sigma web development course and navigating to the 10th video.
-
-In this video, you'll learn about various attributes of audio and video elements in HTML. To learn more about these attributes, fast-forward to around 353.4 seconds into the video, where the instructor begins discussing some of these attributes.
