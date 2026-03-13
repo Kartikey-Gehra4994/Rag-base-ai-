@@ -6,3 +6,5 @@ embedding.joblib
 __pycache__/
 *.pyc
 .vscode/
+responce.txt
+.env

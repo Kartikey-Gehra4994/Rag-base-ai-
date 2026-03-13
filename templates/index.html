@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>RAG AI Teaching Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.9.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+</head>
+
+<body>
+
+    <h1>Web Dev AI Assistant</h1>
+
+    <div class="chat-box">
+
+        <form class="input_container" method="POST" action="/ask">
+            <input id="question" autocomplete="off" name="question" placeholder="Ask anything">
+
+            <button type="submit">
+                <i class="ri-send-ins-line" style="font-size: 20px"></i>
+            </button>
+        </form>
+
+        <div id="response">
+            <div id="response">
+
+                {% if answer %}
+
+                <div class="ai-message">
+
+                    <div class="ai-header">
+                        <i class="ri-robot-2-line"></i>
+                        <span>AI Assistant</span>
+                    </div>
+
+                    <div class="ai-text">
+                        {{ answer }}
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
