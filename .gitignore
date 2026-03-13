@@ -2,7 +2,6 @@ videos/
 audios/
 jsons/
 mergejsons/
-embedding.joblib
 __pycache__/
 *.pyc
 .vscode/
