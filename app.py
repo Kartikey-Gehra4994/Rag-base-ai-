@@ -6,6 +6,7 @@ import numpy as np
 import os
 from groq import Groq
 from dotenv import load_dotenv
+import cohere
 
 # load env
 load_dotenv()
@@ -15,14 +16,15 @@ app = Flask(__name__)
 # Load embeddings once when server starts
 df = joblib.load('embed_merged_json/embedding.joblib')
 
-# Create embedding for user query
-def create_embedding(text_list):
-    r = requests.post('http://localhost:11434/api/embed',json={
-        'model':'bge-m3',
-        'input':text_list
-    })
-    embedding = r.json()['embeddings']
-    return embedding
+co = cohere.Client(os.getenv("COHERE_API_KEY"))
+
+def create_embedding(text):
+    response = co.embed(
+        texts=[text],
+        model="embed-english-v3.0",
+        input_type="search_query" 
+    )
+    return response.embeddings[0]
 
 client = Groq(
     api_key=os.getenv("GROQ_API_KEY")
@@ -48,7 +50,11 @@ def ask():
     question = request.form['question']
     print("Question received")
     print('Thinking...')
-    question_embadding = create_embedding([question])[0]
+    
+    question_embadding = create_embedding(question)
+    print(len(question_embadding))
+    
+    print(len(df['embedding'][0]))
 
     # Calculate similarity between question and stored embeddings
     similaritis = cosine_similarity(np.vstack(df['embedding']), [question_embadding]).flatten()

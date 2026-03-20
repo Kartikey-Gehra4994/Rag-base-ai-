@@ -5,16 +5,19 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import joblib
+import cohere
+from dotenv import load_dotenv
+load_dotenv()
 
-# Create embeddings for a list of texts using local embedding model
-def create_embedding(text_list):
-    r = requests.post('http://localhost:11434/api/embed',json={
-        'model':'bge-m3',
-        'input':text_list
-    })
-    embedding = r.json()['embeddings']
-    print(embedding)
-    return embedding
+co = cohere.Client(os.getenv("COHERE_API_KEY"))
+
+def create_embedding(text):
+    response = co.embed(
+        texts=text,
+        model="embed-english-v3.0",
+        input_type="search_document" 
+    )
+    return response.embeddings
 
 # Get all merged json transcript files
 jsons = os.listdir('mergejsons')
@@ -31,7 +34,11 @@ for json_file in jsons:
     print(f'creating embeddings for {json_file}')
     
     # Generate embeddings for each chunk text
-    embeddings = create_embedding([c['text'] for c in content['chunks']])
+    texts = [c['text'] for c in content['chunks']]
+    embeddings = create_embedding(texts)
+
+    print("chunks:", len(texts))
+    print("embeddings:", len(embeddings))
 
     for i, chunk in enumerate(content['chunks']):
         

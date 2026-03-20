@@ -6,6 +6,35 @@ The system converts course videos into text, creates embeddings, and retrieves t
 
 ---
 
+🌐 **Live Demo:** https://rag-base-ai.onrender.com/
+
+Example:
+
+```
+Ask a Question: What is CSS Flexbox?
+```
+
+The AI will:
+
+* Find the most relevant lecture
+* Tell you **which video**
+* Tell you **the timestamp**
+* Give a human-like explanation
+
+---
+
+# Example Output
+
+```
+Video: CSS Flexbox Tutorial
+Timestamp: 10:32 - 12:10
+
+Explanation:
+Flexbox is used to align items inside a container...
+```
+
+---
+
 # How the System Works
 
 The pipeline works in the following steps:
@@ -23,7 +52,7 @@ The pipeline works in the following steps:
    Small transcript chunks are merged together to create better context for retrieval.
 
 5. **Create Embeddings**
-   Each chunk of text is converted into vector embeddings using the `bge-m3` model.
+   Each chunk of text is converted into vector embeddings using the `Cohere` api.
 
 6. **User Query + Retrieval**
    When a user asks a question:
@@ -64,23 +93,24 @@ project/
 Install the required libraries:
 
 ```
-pip install pandas numpy scikit-learn joblib requests openai-whisper
+pip install pandas numpy scikit-learn joblib requests openai-whisper Cohere
 ```
 
 You also need:
 
 * **FFmpeg** installed
-* **Ollama** running locally
+* **Cohere** for embedding
+* **Groq** for answering
 * Models:
 
-  * `bge-m3` (for embeddings)
-  * `llama3.2` (for answering)
+  * `embed-english-v3.0` (for embeddings)
+  * `llama-3.1-8b-instant` (for answering)
 
 Run:
 
 ```
-ollama pull bge-m3
-ollama pull llama3.2
+Cohere pull embed-english-v3.0
+Groq pull llama-3.1-8b-instant
 ```
 
 ---
@@ -143,31 +173,6 @@ embed_merged_json/embedding.joblib
 python process_incomming.py
 ```
 
-Example:
-
-```
-Ask a Question: What is CSS Flexbox?
-```
-
-The AI will:
-
-* Find the most relevant lecture
-* Tell you **which video**
-* Tell you **the timestamp**
-* Give a human-like explanation
-
----
-
-# Example Output
-
-```
-Video: CSS Flexbox Tutorial
-Timestamp: 10:32 - 12:10
-
-Explanation:
-Flexbox is used to align items inside a container...
-```
-
 ---
 
 # Why RAG is Used
@@ -196,3 +201,5 @@ Possible improvements:
 # Author
 
 Kartikey Gehra - Data Science Enthusiast
+
+
