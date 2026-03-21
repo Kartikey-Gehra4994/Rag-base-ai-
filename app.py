@@ -47,71 +47,75 @@ def home():
 
 @app.route("/ask", methods=['POST'])
 def ask():
-    question = request.form['question']
-    print("Question received")
-    print('Thinking...')
+    try:
+        question = request.form['question']
+        print("Question received")
+        print('Thinking...')
+        
+        question_embadding = create_embedding(question)
+        print(len(question_embadding))
+        
+        print(len(df['embedding'][0]))
+
+        # Calculate similarity between question and stored embeddings
+        similaritis = cosine_similarity(np.vstack(df['embedding']), [question_embadding]).flatten()
+        # print(similaritis)
+
+        top_results = 3
+
+        # Select top most relevant chunks
+        max_idx = similaritis.argsort()[::-1][0:top_results]
+        new_df = df.iloc[max_idx]
+        # print(new_df)
+
+        # Create prompt using retrieved video chunks
+        prompt = f"""
+        You are an AI assistant helping students learn from the Sigma Web Development Course.
+
+        Below are some subtitle chunks extracted from course videos. 
+        Each chunk contains:
+        - video title
+        - video number
+        - start time 
+        - end time 
+        - spoken text
+
+        Course Context:
+        {new_df[['title','number','start','end','text']].to_json(orient='records')}
+
+        Student Question:
+        "{question}"
+
+        Instructions:
+
+        1. Answer the question using ONLY the information from the provided course context.
+        2. Clearly mention:
+        - Video number
+        - Approximate timestamp where the topic is explained
+        3. Explain the answer in a simple and helpful way, like a teacher guiding a student.
+        4. If multiple chunks relate to the question, combine the information.
+        5. Do NOT mention the raw JSON or data format in your answer.
+        6. If the question is unrelated to the course, politely say that you can only answer questions related to the Sigma Web Development course.
+
+        Response Format:
+
+        Topic:
+        Video Number:
+        Timestamp:
+        Explanation:
+
+        If the answer cannot be found in the provided context, say:
+        "I couldn't find this topic in the Sigma Web Development course videos."
+        """
+
+        ## send prompt and get responce from LLM
+        responce = inference(prompt)
+        print("Generating answer...")
+
+        return render_template('index.html', answer=responce)
+    except Exception as e:
+        print('ERROR', str(e))
+        return f'ERROR: {str(e)}'
     
-    question_embadding = create_embedding(question)
-    print(len(question_embadding))
-    
-    print(len(df['embedding'][0]))
-
-    # Calculate similarity between question and stored embeddings
-    similaritis = cosine_similarity(np.vstack(df['embedding']), [question_embadding]).flatten()
-    # print(similaritis)
-
-    top_results = 3
-
-    # Select top most relevant chunks
-    max_idx = similaritis.argsort()[::-1][0:top_results]
-    new_df = df.iloc[max_idx]
-    # print(new_df)
-
-    # Create prompt using retrieved video chunks
-    prompt = f"""
-    You are an AI assistant helping students learn from the Sigma Web Development Course.
-
-    Below are some subtitle chunks extracted from course videos. 
-    Each chunk contains:
-    - video title
-    - video number
-    - start time 
-    - end time 
-    - spoken text
-
-    Course Context:
-    {new_df[['title','number','start','end','text']].to_json(orient='records')}
-
-    Student Question:
-    "{question}"
-
-    Instructions:
-
-    1. Answer the question using ONLY the information from the provided course context.
-    2. Clearly mention:
-    - Video number
-    - Approximate timestamp where the topic is explained
-    3. Explain the answer in a simple and helpful way, like a teacher guiding a student.
-    4. If multiple chunks relate to the question, combine the information.
-    5. Do NOT mention the raw JSON or data format in your answer.
-    6. If the question is unrelated to the course, politely say that you can only answer questions related to the Sigma Web Development course.
-
-    Response Format:
-
-    Topic:
-    Video Number:
-    Timestamp:
-    Explanation:
-
-    If the answer cannot be found in the provided context, say:
-    "I couldn't find this topic in the Sigma Web Development course videos."
-"""
-
-    ## send prompt and get responce from LLM
-    responce = inference(prompt)
-    print("Generating answer...")
-
-    return render_template('index.html', answer=responce)
-
 if __name__ == "__main__":
     app.run(debug=True)
