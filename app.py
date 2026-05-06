@@ -14,7 +14,9 @@ load_dotenv()
 app = Flask(__name__)
 
 # Load embeddings once when server starts
+print("Loading embeddings...")
 df = joblib.load('embed_merged_json/embedding.joblib')
+print("Embeddings loaded!")
 
 co = cohere.Client(os.getenv("COHERE_API_KEY"))
 
@@ -47,9 +49,14 @@ def home():
 
 @app.route("/ask", methods=['POST'])
 def ask():
+    global df
+
+    if df is None:
+        print("Server is starting... please wait 30-60 seconds and try again.")
+
     try:
         question = request.form['question']
-        print("Question received")
+        print("Question received:", question)
         print('Thinking...')
         
         question_embadding = create_embedding(question)
