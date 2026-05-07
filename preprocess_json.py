@@ -20,7 +20,7 @@ def create_embedding(text):
     return response.embeddings
 
 # Get all merged json transcript files
-jsons = os.listdir('mergejsons')
+jsons = os.listdir('merge_jsons')
 
 my_dicts = []
 chunk_id = 0
