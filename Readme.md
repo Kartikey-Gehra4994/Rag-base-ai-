@@ -1,205 +1,543 @@
 # RAG Based AI Teaching Assistant
 
-This project builds a **Retrieval Augmented Generation (RAG)** based AI assistant that can answer questions from your own course videos.
+An end-to-end **Retrieval Augmented Generation (RAG)** application that helps students quickly find where a topic is taught inside a course.
 
-The system converts course videos into text, creates embeddings, and retrieves the most relevant parts of the lecture to answer user questions using an LLM.
+Instead of searching through hours of lecture videos manually, users can ask a question and the system retrieves the most relevant course content and provides the **video number, video title, timestamp, and a short explanation**.
+
+---
+![Project Screenshot](static/Screenshot.png)
+---
+
+## 🌐 Live Demo
+
+**[Try the Live Demo](https://rag-base-ai.onrender.com/)**
 
 ---
 
-🌐 **Live Demo:** https://rag-base-ai.onrender.com/
+## ✨ Features
 
-Example:
-
-```
-Ask a Question: What is CSS Flexbox?
-```
-
-The AI will:
-
-* Find the most relevant lecture
-* Tell you **which video**
-* Tell you **the timestamp**
-* Give a human-like explanation
-
----
-
-# Example Output
-
-```
-Video: CSS Flexbox Tutorial
-Timestamp: 10:32 - 12:10
-
-Explanation:
-Flexbox is used to align items inside a container...
-```
+* Ask questions about course content using natural language
+* Retrieve the most relevant lecture sections
+* Identify the relevant video number and title
+* Provide the timestamp where the topic is discussed
+* Generate a concise explanation using an LLM
+* Semantic search using vector embeddings
+* Responsive web interface
+* Dark glassmorphism UI
+* FastAPI backend
+* Cohere embeddings
+* Groq LLM inference
+* Copy AI-generated answers
 
 ---
 
-# How the System Works
+## 💡 Example
 
-The pipeline works in the following steps:
+### User Question
 
-1. **Collect Videos**
-   Put all lecture videos inside the `videos` folder.
+```text
+What is CSS Flexbox?
+```
 
-2. **Convert Video to MP3**
-   The script extracts audio from videos using `ffmpeg`.
+### AI Response
 
-3. **Convert MP3 to Text (JSON)**
-   The Whisper model converts audio into transcript chunks with timestamps.
+```text
+Topic Found
 
-4. **Merge Chunks**
-   Small transcript chunks are merged together to create better context for retrieval.
+Video: 12
+Title: CSS Flexbox
 
-5. **Create Embeddings**
-   Each chunk of text is converted into vector embeddings using the `Cohere` api.
+Timestamp: 10:32 to 12:10
 
-6. **User Query + Retrieval**
-   When a user asks a question:
+What is taught:
+The lecture explains how Flexbox is used to arrange and align elements inside a container.
 
-   * The question is converted into an embedding
-   * Cosine similarity finds the most relevant chunks
-   * These chunks are sent to the LLM
-
-7. **Generate Answer**
-   The LLM generates a human-like answer and tells the user which **video and timestamp** contains the explanation.
+Recommended starting point:
+Start at 10:32 in Video 12.
+```
 
 ---
 
-# Project Structure
+## 🧠 How It Works
 
+The application follows a complete RAG pipeline:
+
+```text
+Course Videos
+      ↓
+Video → MP3
+      ↓
+Whisper Transcription
+      ↓
+Transcript JSON
+      ↓
+Merge Transcript Chunks
+      ↓
+Cohere Embeddings
+      ↓
+Embedding Storage
+      ↓
+User Question
+      ↓
+Question Embedding
+      ↓
+Cosine Similarity Search
+      ↓
+Top Relevant Chunks
+      ↓
+Groq LLM
+      ↓
+Answer with Video + Timestamp
 ```
-project/
+
+---
+
+# 🔍 RAG Pipeline
+
+### 1. Collect Course Videos
+
+Course lecture videos are placed inside the `videos` folder.
+
+---
+
+### 2. Convert Videos to Audio
+
+The videos are converted into MP3 audio files using **FFmpeg**.
+
+```text
+videos/
+   ↓
+audios/
+```
+
+This makes the audio easier to process with the transcription model.
+
+---
+
+### 3. Transcribe Audio
+
+The MP3 files are processed using **OpenAI Whisper**.
+
+Whisper converts the spoken content into text while preserving timestamp information.
+
+The application uses:
+
+```text
+Whisper large-v2
+```
+
+The transcription is stored as JSON containing information such as:
+
+```json
+{
+    "number": "01",
+    "title": "CSS Introduction",
+    "start": 12.4,
+    "end": 28.7,
+    "text": "..."
+}
+```
+
+---
+
+### 4. Merge Transcript Chunks
+
+Whisper produces relatively small transcript segments.
+
+These segments are merged together to create larger and more meaningful chunks.
+
+This provides better context during semantic search.
+
+The current chunking approach uses overlapping transcript segments so that important information is not lost between chunks.
+
+---
+
+### 5. Create Embeddings
+
+Each transcript chunk is converted into a vector embedding using the **Cohere Embed API**.
+
+Current embedding model:
+
+```text
+embed-english-v3.0
+```
+
+Document chunks use:
+
+```text
+search_document
+```
+
+while user questions use:
+
+```text
+search_query
+```
+
+This allows the system to perform semantic similarity search between the user's question and course content.
+
+---
+
+### 6. Retrieve Relevant Content
+
+When a user asks a question:
+
+```text
+What is CSS Flexbox?
+```
+
+the question is converted into an embedding.
+
+The system then calculates **cosine similarity** between the question embedding and the stored course embeddings.
+
+The most relevant chunks are selected.
+
+Currently, the system retrieves the:
+
+```text
+Top 3 relevant chunks
+```
+
+---
+
+### 7. Generate the Answer
+
+The retrieved course content is passed to a Large Language Model through the **Groq API**.
+
+Current model:
+
+```text
+openai/gpt-oss-20b
+```
+
+The LLM uses the retrieved course content to generate a concise response containing:
+
+* Video number
+* Video title
+* Timestamp
+* Explanation
+* Recommended starting point
+
+The model is instructed to answer only from the retrieved course content to reduce hallucinations.
+
+---
+
+# 🌐 Web Application
+
+The project includes a web interface built using:
+
+* HTML
+* CSS
+* JavaScript
+* FastAPI
+* Jinja2
+
+The frontend provides:
+
+* Dark glassmorphism UI
+* Responsive design
+* Question input
+* Example questions
+* Loading state
+* AI response card
+* Copy answer functionality
+* Favicon and static assets
+
+The frontend communicates with the FastAPI backend through the `/ask` API endpoint.
+
+---
+
+# ⚙️ Tech Stack
+
+| Technology          | Purpose                   |
+| ------------------- | ------------------------- |
+| Python              | Core development          |
+| FastAPI             | Backend API               |
+| HTML/CSS/JavaScript | Frontend                  |
+| Jinja2              | HTML template rendering   |
+| OpenAI Whisper      | Speech-to-text            |
+| Cohere              | Text embeddings           |
+| Scikit-learn        | Cosine similarity         |
+| Joblib              | Embedding storage         |
+| Groq                | LLM inference             |
+| FFmpeg              | Video-to-audio conversion |
+| Render              | Deployment                |
+
+---
+
+# 📁 Project Structure
+
+```text
+Rag-base-Ai/
 │
-├── videos/                # Input lecture videos
-├── audios/                # Extracted MP3 files
-├── jsons/                 # Whisper transcript files
-├── mergejsons/            # Merged transcript chunks
-├── embed_merged_json/     # Vector embeddings (joblib)
+├── videos/
+│   └── Course videos
 │
-├── video_to_mp3.py        # Convert videos to mp3
-├── mp3_to_json.py         # Convert audio to transcript JSON
-├── merge_chunks.py        # Merge small transcript chunks
-├── preprocess_json.py     # Create embeddings
-├── process_incomming.py   # Ask questions to the AI assistant
+├── audios/
+│   └── Extracted MP3 files
 │
+├── jsons/
+│   └── Whisper transcript JSON files
+│
+├── merge_jsons/
+│   └── Merged transcript chunks
+│
+├── embed_merged_json/
+│   └── embedding.joblib
+│
+├── templates/
+│   └── index.html
+│
+├── static/
+│   ├── style.css
+│   ├── script.js
+│   └── favicon.ico
+│
+├── video_to_mp3.py
+├── mp3_to_json.py
+├── merge_chunks.py
+├── preprocess_json.py
+├── main.py
+├── schemas.py
+├── requirements.txt
+├── .env
 └── README.md
 ```
 
 ---
 
-# Requirements
+# 🔑 Environment Variables
 
-Install the required libraries:
+Create a `.env` file in the project root:
 
+```env
+COHERE_API_KEY=your_cohere_api_key
+GROQ_API_KEY=your_groq_api_key
 ```
-pip install pandas numpy scikit-learn joblib requests openai-whisper Cohere
+
+> **Important:** Never commit your `.env` file to GitHub.
+
+Add it to `.gitignore`:
+
+```text
+.env
 ```
 
-You also need:
+---
 
-* **FFmpeg** installed
-* **Cohere** for embedding
-* **Groq** for answering
-* Models:
+# 📦 Installation
 
-  * `embed-english-v3.0` (for embeddings)
-  * `llama-3.1-8b-instant` (for answering)
+Clone the repository:
+
+```bash
+git clone https://github.com/Kartikey-Gehra4994/Rag-base-Ai.git
+```
+
+Move into the project directory:
+
+```bash
+cd Rag-base-Ai
+```
+
+Install the Python dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Make sure **FFmpeg** is installed and available in your system PATH.
+
+---
+
+# 🚀 Running the Project
+
+## Step 1 — Prepare Videos
+
+Place the course videos inside:
+
+```text
+videos/
+```
+
+---
+
+## Step 2 — Convert Videos to MP3
 
 Run:
 
-```
-Cohere pull embed-english-v3.0
-Groq pull llama-3.1-8b-instant
-```
-
----
-
-# How to Run the Project
-
-### Step 1 — Add Videos
-
-Put your course videos in the `videos` folder.
-
----
-
-### Step 2 — Convert Videos to Audio
-
-```
+```bash
 python video_to_mp3.py
 ```
 
-This creates MP3 files inside `audios/`.
+The extracted audio files will be stored in:
+
+```text
+audios/
+```
 
 ---
 
-### Step 3 — Convert Audio to Text
+## Step 3 — Generate Transcripts
 
-```
+Run:
+
+```bash
 python mp3_to_json.py
 ```
 
-This generates transcript JSON files inside `jsons/`.
+Whisper will generate transcript JSON files inside:
+
+```text
+jsons/
+```
 
 ---
 
-### Step 4 — Merge Transcript Chunks
+## Step 4 — Merge Transcript Chunks
 
-```
+Run:
+
+```bash
 python merge_chunks.py
 ```
 
-Merged chunks will be saved in `mergejsons/`.
+The processed chunks will be stored in:
+
+```text
+merge_jsons/
+```
 
 ---
 
-### Step 5 — Create Embeddings
+## Step 5 — Generate Embeddings
 
-```
+Run:
+
+```bash
 python preprocess_json.py
 ```
 
 This creates:
 
-```
+```text
 embed_merged_json/embedding.joblib
 ```
 
+This file contains the vector representations used during retrieval.
+
 ---
 
-### Step 6 — Ask Questions
+## Step 6 — Start the FastAPI Application
 
+Run:
+
+```bash
+uvicorn main:app --reload
 ```
-python process_incomming.py
+
+Open the application:
+
+**http://127.0.0.1:8000**
+
+You can also access the FastAPI documentation:
+
+**http://127.0.0.1:8000/docs**
+
+---
+
+# 🔌 API Endpoint
+
+The application exposes a POST endpoint:
+
+```text
+POST /ask
+```
+
+### Request
+
+```json
+{
+    "question": "What is CSS Flexbox?"
+}
+```
+
+### Response
+
+```json
+{
+    "answer": "Topic Found\n\nVideo: 12\nTitle: CSS Flexbox..."
+}
 ```
 
 ---
 
-# Why RAG is Used
+# 🧩 Why RAG?
 
-Large language models do not know your private course data.
+A general-purpose LLM may not know the specific content of a private course or a custom collection of videos.
 
-RAG solves this problem by:
+RAG solves this problem by combining:
 
-1. Retrieving relevant information from your data
-2. Sending it to the LLM
-3. Generating an accurate answer
+```text
+Information Retrieval
+        +
+Large Language Model
+```
 
----
+Instead of asking the LLM to answer purely from its general knowledge, the system first retrieves relevant information from the course and then provides that information to the LLM.
 
-# Future Improvements
-
-Possible improvements:
-
-* Add a **web interface (Streamlit / React)**
-* Store embeddings in **vector databases like FAISS**
-* Add **multi-language support**
-* Add **YouTube video support**
+This allows the application to generate answers based specifically on the course content.
 
 ---
 
-# Author
+# 🎯 Project Goals
 
-Kartikey Gehra - Data Science Enthusiast
+The main goal of this project is to make long video courses easier to navigate.
 
+Instead of manually searching through multiple lectures, a student can ask:
 
+```text
+Where is CSS Grid explained?
+```
+
+and receive:
+
+```text
+Video
+  ↓
+Title
+  ↓
+Timestamp
+  ↓
+Explanation
+```
+
+This reduces the time required to manually search through long course videos.
+
+---
+
+# 🔮 Future Improvements
+
+Planned improvements include:
+
+* Direct **Watch from Timestamp** buttons
+* YouTube video integration
+* More advanced vector database integration
+* Improved semantic retrieval
+* Re-ranking retrieved results
+* Multi-language support
+* Support for multiple courses
+* Conversation history
+* Streaming LLM responses
+* More structured AI responses
+* Improved citation and source display
+
+---
+
+# 👨‍💻 Author
+
+**Kartikey Gehra**
+
+Data Science / Machine Learning Enthusiast
+
+**GitHub:**
+https://github.com/Kartikey-Gehra4994

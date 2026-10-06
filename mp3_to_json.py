@@ -5,6 +5,9 @@ import os
 # Load Whisper model for speech-to-text
 model = whisper.load_model('large-v2')
 
+# Create output folder
+os.makedirs("jsons", exist_ok=True)
+
 # Get all mp3 files from audios folder
 audios = os.listdir('audios')
 

@@ -30,7 +30,7 @@ for filename in os.listdir('jsons'):
                  
                 # Merge chunk texts and update timestamps
                 new_chunks.append({
-                    'number': data['chunks'][0]['number'],
+                    'number': chunk_group['chunks'][0]['number'],
                     'title': chunk_group[0]['title'],
                     'start': chunk_group[0]['start'],
                     'end': chunk_group[-1]['end'],

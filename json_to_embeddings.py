@@ -20,7 +20,7 @@ def create_embedding(text):
     return response.embeddings
 
 # Get all merged json transcript files
-jsons = os.listdir('merge_jsons')
+jsons = os.listdir('mergejsons')
 
 my_dicts = []
 chunk_id = 0
@@ -28,7 +28,7 @@ chunk_id = 0
 for json_file in jsons:
 
     # Load merged json file
-    with open(f'jsons/{json_file}') as f:
+    with open(f'mergejsons/{json_file}') as f:
         content = json.load(f)
 
     print(f'creating embeddings for {json_file}')
@@ -51,6 +51,9 @@ for json_file in jsons:
 
 # Convert all chunks into dataframe
 df = pd.DataFrame.from_records(my_dicts) # Save this dataframe
+
+# cerate a new folder to store embeddings
+os.makedirs('embed_merged_json', exist_ok=True)
 
 # Save dataframe with embeddings for later retrieval (RAG search)
 joblib.dump(df, 'embed_merged_json/embedding.joblib')

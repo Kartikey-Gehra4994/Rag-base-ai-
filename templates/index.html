@@ -1,52 +1,144 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 
 <head>
-    <title>RAG AI Teaching Assistant</title>
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.9.0/fonts/remixicon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Course Assistant</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', path='favicon.ico') }}">
 
 </head>
 
 <body>
+    <main class="container">
 
-    <h1>Sigma AI Assistant</h1>
 
-    <div class="chat-box">
+        <header class="header">
 
-        <form class="input_container" method="POST" action="/ask">
-            <input id="question" autocomplete="off" name="question" placeholder="Ask anything">
+            <div class="badge">
+                <span class="badge-dot"></span>
+                AI Course Assistant
+            </div>
 
-            <button type="submit">
-                <i class="ri-send-ins-line" style="font-size: 20px"></i>
-            </button>
-        </form>
+            <h1>
+                Learn smarter with
+                <span class="gradient-text">AI</span>
+            </h1>
 
-        <div id="response">
-            <div id="response">
+            <p>
+                Ask a question and instantly find the relevant
+                lesson, video and timestamp from your course.
+            </p>
 
-                {% if answer %}
+        </header>
 
-                <div class="ai-message">
+        <section class="search-card">
 
-                    <div class="ai-header">
-                        <i class="ri-robot-2-line"></i>
-                        <span>AI Assistant</span>
+            <form id="questionForm">
+
+                <div class="search-wrapper">
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">⌕</span>
+
+                        <input type="text" id="question" name="question" placeholder="Ask something about the course..."
+                            autocomplete="off" required>
+
                     </div>
 
-                    <div class="ai-text">
-                        {{ answer }}
-                    </div>
+                    <button type="submit" id="askButton">
+                        Ask AI
+                    </button>
 
                 </div>
 
-                {% endif %}
+            </form>
+
+
+            <div class="examples">
+
+                <span class="examples-label">
+                    Try:
+                </span>
+
+                <button type="button" class="example" data-question="Where is the box model taught?">
+                    CSS Box Model
+                </button>
+
+                <button type="button" class="example" data-question="Where is Flexbox explained?">
+                    Flexbox
+                </button>
+
+                <button type="button" class="example" data-question="Where is JavaScript DOM manipulation taught?">
+                    DOM Manipulation
+                </button>
 
             </div>
-        </div>
 
-    </div>
+        </section>
+
+
+        <section class="loading" id="loading">
+
+            <div class="loading-top">
+
+                <div class="spinner"></div>
+
+                <span>
+                    Searching the course and generating your answer...
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <section class="answer-card" id="answerCard">
+
+            <div class="answer-header">
+
+                <div class="answer-title">
+
+                    <span class="answer-status"></span>
+
+                    <span>
+                        AI Answer
+                    </span>
+
+                </div>
+
+                <button type="button" class="copy-button" id="copyButton">
+                    Copy
+                </button>
+
+            </div>
+
+
+            <div class="answer-content">
+
+                <div id="answer"></div>
+
+            </div>
+
+        </section>
+
+
+        <footer class="footer">
+
+            AI powered course search assistant
+
+        </footer>
+
+
+    </main>
+
+    <script src="{{ url_for('static', path='script.js') }}"></script>
+
 </body>
 
 </html>
